@@ -53,26 +53,10 @@ public struct Combinations<Base: Collection> {
   }
   
   /// The total number of combinations.
-  @inlinable
   public var count: Int {
-    guard let k = self.kRange else { return 0 }
-    let n = baseCount
-    if k == 0 ..< (n + 1) {
-      return 1 << n
-    }
-    
-    func binomial(n: Int, k: Int) -> Int {
-      switch k {
-      case n, 0: return 1
-      case n...: return 0
-      case (n / 2 + 1)...: return binomial(n: n, k: n - k)
-      default: return n * binomial(n: n - 1, k: k - 1) / k
-      }
-    }
-    
-    return k.map {
-      binomial(n: n, k: $0)
-    }.reduce(0, +)
+    guard let kRange = self.kRange else { return 0 }
+    let arithmeticTriangle = ArithmeticTriangle<Int>()
+    return arithmeticTriangle.sumOfElements(at: kRange, in: base.count)
   }
 }
 
