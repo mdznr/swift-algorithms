@@ -12,11 +12,11 @@
 import XCTest
 import Algorithms
 
-class BifurcateTests: XCTestCase {
+class partitionedTests: XCTestCase {
   func testEmpty() {
     let input: [Int] = []
     
-    let s0 = input.bifurcate({ _ in return true })
+    let s0 = input.partitioned({ _ in return true })
     
     XCTAssertTrue(s0.0.isEmpty)
     XCTAssertTrue(s0.1.isEmpty)
@@ -24,16 +24,16 @@ class BifurcateTests: XCTestCase {
   
   func testExample() throws {
     let cast = ["Vivien", "Marlon", "Kim", "Karl"]
-    let (longNames, shortNames) = cast.bifurcate({ $0.count < 5 })
+    let (longNames, shortNames) = cast.partitioned({ $0.count < 5 })
     XCTAssertEqual(longNames, ["Vivien", "Marlon"])
     XCTAssertEqual(shortNames, ["Kim", "Karl"])
   }
   
   func testWithPredicate() throws {
-    let s0 = ["A", "B", "C", "D"].bifurcate({ $0 == $0.lowercased() })
-    let s1 = ["a", "B", "C", "D"].bifurcate({ $0 == $0.lowercased() })
-    let s2 = ["a", "B", "c", "D"].bifurcate({ $0 == $0.lowercased() })
-    let s3 = ["a", "B", "c", "d"].bifurcate({ $0 == $0.lowercased() })
+    let s0 = ["A", "B", "C", "D"].partitioned({ $0 == $0.lowercased() })
+    let s1 = ["a", "B", "C", "D"].partitioned({ $0 == $0.lowercased() })
+    let s2 = ["a", "B", "c", "D"].partitioned({ $0 == $0.lowercased() })
+    let s3 = ["a", "B", "c", "d"].partitioned({ $0 == $0.lowercased() })
     
     XCTAssertEqual(s0.0, ["A", "B", "C", "D"])
     XCTAssertEqual(s0.1, [])
@@ -49,11 +49,11 @@ class BifurcateTests: XCTestCase {
   }
   
   func testWithIndex() throws {
-    let s0 = ["A", "B", "C", "D"].bifurcate(upTo: 0)
-    let s1 = ["A", "B", "C", "D"].bifurcate(upTo: 1)
-    let s2 = ["A", "B", "C", "D"].bifurcate(upTo: 2)
-    let s3 = ["A", "B", "C", "D"].bifurcate(upTo: 3)
-    let s4 = ["A", "B", "C", "D"].bifurcate(upTo: 4)
+    let s0 = ["A", "B", "C", "D"].partitioned(upTo: 0)
+    let s1 = ["A", "B", "C", "D"].partitioned(upTo: 1)
+    let s2 = ["A", "B", "C", "D"].partitioned(upTo: 2)
+    let s3 = ["A", "B", "C", "D"].partitioned(upTo: 3)
+    let s4 = ["A", "B", "C", "D"].partitioned(upTo: 4)
     
     XCTAssertEqual(s0.0, [])
     XCTAssertEqual(s0.1, ["A", "B", "C", "D"])

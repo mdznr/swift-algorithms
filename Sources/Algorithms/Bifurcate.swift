@@ -13,11 +13,11 @@ extension Sequence {
   /// Returns two arrays containing, in order, the elements of the sequence that
   /// do and don’t satisfy the given predicate, respectively.
   ///
-  /// In this example, `bifurcate(_:)` is used to separate the input based on
+  /// In this example, `partitioned(_:)` is used to separate the input based on
   /// names that aren’t and are shorter than five characters, respectively:
   ///
   ///     let cast = ["Vivien", "Marlon", "Kim", "Karl"]
-  ///     let (longNames, shortNames) = cast.bifurcate({ $0.count < 5 })
+  ///     let (longNames, shortNames) = cast.partitioned({ $0.count < 5 })
   ///     print(longNames)
   ///     // Prints "["Vivien", "Marlon"]"
   ///     print(shortNames)
@@ -39,7 +39,7 @@ extension Sequence {
   /// `RandomAccessCollection` since the size of the sequence is unknown, unlike
   /// `RandomAccessCollection`.
   @inlinable
-  public func bifurcate(
+  public func partitioned(
     _ belongsInSecondCollection: (Element) throws -> Bool
   ) rethrows -> ([Element], [Element]) {
     var lhs = ContiguousArray<Element>()
@@ -61,7 +61,7 @@ extension Collection {
   // This is a specialized version of the same algorithm on `Sequence` that
   // avoids reallocation of arrays since `count` is known ahead of time.
   @inlinable
-  public func bifurcate(
+  public func partitioned(
     _ belongsInSecondCollection: (Element) throws -> Bool
   ) rethrows -> ([Element], [Element]) {
     guard !self.isEmpty else {
@@ -78,7 +78,7 @@ extension Collection {
     let count = self.count
     
     // Inside of the `initializer` closure, we set what the actual mid-point is.
-    // We will use this to bifurcate the single array into two in constant time.
+    // We will use this to partitioned the single array into two in constant time.
     var midPoint: Int = 0
     
     let elements = try [Element](
@@ -111,7 +111,7 @@ extension Collection {
         }
       })
     
-    let collections = elements.bifurcate(upTo: midPoint)
+    let collections = elements.partitioned(upTo: midPoint)
     return _tupleMap(collections, { Array($0) })
   }
 }
@@ -125,7 +125,7 @@ extension Collection {
   /// the element at `index`. That element is in the second subsequence.
   /// - Complexity: O(*1*)
   @inlinable
-  public func bifurcate(upTo index: Index) -> (SubSequence, SubSequence) {
+  public func partitioned(upTo index: Index) -> (SubSequence, SubSequence) {
     return (
       self[self.startIndex..<index],
       self[index..<self.endIndex]
