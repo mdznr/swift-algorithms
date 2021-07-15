@@ -73,7 +73,7 @@ extension Collection {
 
 ### Complexity
 
-The existing partition is an O(_n_) operations, where _n_ is the length of the
+The existing partition is an O(_n_) operation, where _n_ is the length of the
 range to be partitioned, while the stable partition is O(_n_ log _n_). Both
 partitions have algorithms with improved performance for bidirectional
 collections, so it would be ideal for those to be customization points were they
