@@ -42,6 +42,32 @@ let p = numbers.partitioningIndex(where: { $0.isMultiple(of: 20) })
 // numbers[p...] = [20, 40, 60]
 ```
 
+The standard library’s existing `filter(_:)` method provides functionality to
+get the elements that do match a given predicate. `partitioned(_:)` returns
+both the elements that match the preciate as well as those that don’t, as a
+tuple.
+
+```swift
+let cast = ["Vivien", "Marlon", "Kim", "Karl"]
+let (longNames , shortNames) = cast.bifurcate({ $0.count < 5 })
+print(longNames)
+// Prints "["Vivien", "Marlon"]"
+print(shortNames)
+// Prints "["Kim", "Karl"]"
+```
+
+There’s also a function to bifurcate a collection into a prefix and a suffix, up
+to but not including a given index:
+
+```swift
+let cast = ["Vivien", "Marlon", "Kim", "Karl"]
+let (callbacks, alternates) = cast.bifurcate(upTo: 2)
+print(callbacks)
+// Prints "["Vivien", "Marlon"]"
+print(alternates)
+// Prints "["Kim", "Karl"]"
+```
+
 ## Detailed Design
 
 All mutating methods are declared as extensions to `MutableCollection`.
@@ -69,6 +95,12 @@ extension Collection {
         where belongsInSecondPartition: (Element) throws -> Bool
     ) rethrows -> Index
 }
+
+extension Sequence {
+	public func bifurcate(
+	  _ belongsInFirstCollection: (Element) throws -> Bool
+	) rethrows -> ([Element], [Element])
+}
 ```
 
 ### Complexity
@@ -81,6 +113,9 @@ to eventually land in the standard library.
 
 `partitioningIndex(where:)` is a slight generalization of a binary search, and
 is an O(log _n_) operation for random-access collections; O(_n_) otherwise.
+
+`partitioned(_:)` is an O(_n_) operation, where _n_ is the number of elements in
+the original sequence.
 
 ### Comparison with other languages
 
