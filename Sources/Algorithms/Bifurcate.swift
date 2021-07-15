@@ -17,21 +17,21 @@ extension Sequence {
   /// names shorter than five characters:
   ///
   ///     let cast = ["Vivien", "Marlon", "Kim", "Karl"]
-  ///     let (shortNames, longNames) = cast.bifurcate({ $0.count < 5 })
-  ///     print(shortNames)
-  ///     // Prints "["Kim", "Karl"]"
+  ///     let (longNames, shortNames) = cast.bifurcate({ $0.count < 5 })
   ///     print(longNames)
   ///     // Prints "["Vivien", "Marlon"]"
+  ///     print(shortNames)
+  ///     // Prints "["Kim", "Karl"]"
   ///
-  /// - Parameter belongsInFirstCollection: A closure that takes an element of
+  /// - Parameter belongsInSecondCollection: A closure that takes an element of
   /// the sequence as its argument and returns a Boolean value indicating
-  /// whether the element should be included in the first returned array.
-  /// Otherwise, the element will appear in the second returned array.
+  /// whether the element should be included in the second returned array.
+  /// Otherwise, the element will appear in the first returned array.
   ///
   /// - Returns: Two arrays with with all of the elements of the receiver. The
-  /// first array contains all the elements that `belongsInFirstCollection`
-  /// allowed, and the second array contains all the elements that
-  /// `belongsInFirstCollection` didn’t allow.
+  /// first array contains all the elements that `belongsInSecondCollection`
+  /// didn’t allow, and the second array contains all the elements that
+  /// `belongsInSecondCollection` allowed.
   ///
   /// - Complexity: O(*n*), where *n* is the length of the sequence.
   ///
@@ -40,16 +40,16 @@ extension Sequence {
   /// `RandomAccessCollection`.
   @inlinable
   public func bifurcate(
-    _ belongsInFirstCollection: (Element) throws -> Bool
+    _ belongsInSecondCollection: (Element) throws -> Bool
   ) rethrows -> ([Element], [Element]) {
     var lhs = ContiguousArray<Element>()
     var rhs = ContiguousArray<Element>()
     
     for element in self {
-      if try belongsInFirstCollection(element) {
-        lhs.append(element)
-      } else {
+      if try belongsInSecondCollection(element) {
         rhs.append(element)
+      } else {
+        lhs.append(element)
       }
     }
     
@@ -62,7 +62,7 @@ extension Collection {
   // avoids reallocation of arrays since `count` is known ahead of time.
   @inlinable
   public func bifurcate(
-    _ belongsInFirstCollection: (Element) throws -> Bool
+    _ belongsInSecondCollection: (Element) throws -> Bool
   ) rethrows -> ([Element], [Element]) {
     guard !self.isEmpty else {
       return ([], [])
@@ -88,12 +88,12 @@ extension Collection {
         var rhs = lhs + buffer.count
         do {
           for element in self {
-            if try belongsInFirstCollection(element) {
-              lhs.initialize(to: element)
-              lhs += 1
-            } else {
+            if try belongsInSecondCollection(element) {
               rhs -= 1
               rhs.initialize(to: element)
+            } else {
+              lhs.initialize(to: element)
+              lhs += 1
             }
           }
           
