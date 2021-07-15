@@ -13,8 +13,8 @@ extension Sequence {
   /// Returns two arrays containing, in order, the elements of the sequence that
   /// do and don’t satisfy the given predicate, respectively.
   ///
-  /// In this example, `bifurcate()` is used to include only
-  /// names shorter than five characters:
+  /// In this example, `bifurcate(_:)` is used to separate the input based on
+  /// names that aren’t and are shorter than five characters, respectively:
   ///
   ///     let cast = ["Vivien", "Marlon", "Kim", "Karl"]
   ///     let (longNames, shortNames) = cast.bifurcate({ $0.count < 5 })
